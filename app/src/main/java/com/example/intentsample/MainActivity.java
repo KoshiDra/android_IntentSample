@@ -2,7 +2,10 @@ package com.example.intentsample;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -22,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         ListView lv = findViewById(R.id.lvMenu);
 
+        // ----------------------------------------------------------------------------------------------------------------------------------
         // メニューリスト作成
         List<Map<String, String>> menuList = createMenu();
 
@@ -34,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, menuList, android.R.layout.simple_list_item_2, from, to);
 
         lv.setAdapter(adapter);
+        // ----------------------------------------------------------------------------------------------------------------------------------
+
+        // メニュータップ時のリスナ設定
+        lv.setOnItemClickListener(new ListItemClickListener());
     }
 
     @NotNull
@@ -112,5 +120,26 @@ public class MainActivity extends AppCompatActivity {
         menuList.add(menu);
 
         return menuList;
+    }
+
+    private class ListItemClickListener implements AdapterView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            // タップされた行データ取得（データはMap型）
+            Map<String, String> map = (Map<String, String>) parent.getItemAtPosition(position);
+
+            String menu = map.get("name");
+            String price = map.get("price");
+
+            // 第二画面への引数設定
+            Intent intent = new Intent(MainActivity.this, MenuThanksActivity.class);
+            intent.putExtra("menu", menu);
+            intent.putExtra("price", price);
+
+            // 第二画面の起動
+            startActivity(intent);
+        }
     }
 }
